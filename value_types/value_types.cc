@@ -1,3 +1,42 @@
+/**
+ * Lvalue and Rvalue and their references
+ * 
+ * This file demonstrates some examples about primary value categories in C++,
+ * which are prvalue, lvalue and xvalues.
+ *
+ * --------------------------------------------------------------------------------------
+ * 
+ * Glvalue => lvalue or xvalue
+ * Rvalue  => prvalue or xvalue
+ * 
+ * Lvalues can be think of what we can take address of. They have names and
+ * correspond to some location in memory. Variable names, class members, array
+ * elements are some examples.
+ * 
+ * Prvalues (pure rvalues) are temporary values, which may or may not have a
+ * location in memory. Temporary variables, literals(except string), function
+ * calls that has non-reference return type are some examples.
+ * 
+ * Xvalues (expiring values) are objects just near their lifetime, so they can
+ * be reused.
+ * 
+ * --------------------------------------------------------------------------------------
+ * 
+ * => Rvalue references only bind to rvalues.
+ * => Lvalue references bind lvalues. Also const lvalue references can bind to rvalues.
+ * (It makes sense cause modifying a temp variable would be problematic)
+ * 
+ * --------------------------------------------------------------------------------------
+ * 
+ * => The biggest caveat here is rvalue references itself can be lvalue in some contexts
+ * 
+ * void f(Object&& obj){
+ *    // obj is an lvalue in this scope
+ * }
+ * 
+ * This takes us to the some sort of rule of thumb: If it has a name, then it's an lvalue.
+ */
+
 #include <iostream>
 #include <type_traits>
 #include <typeinfo>
