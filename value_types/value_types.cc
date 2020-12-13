@@ -6,6 +6,8 @@
  *
  * --------------------------------------------------------------------------------------
  * 
+ * Mixed categories:
+ * 
  * Glvalue => lvalue or xvalue
  * Rvalue  => prvalue or xvalue
  * 
@@ -22,7 +24,7 @@
  * 
  * --------------------------------------------------------------------------------------
  * 
- * => Rvalue references only bind to rvalues.
+ * => Rvalue references only bind to rvalues. (Xvalues bind to rvalue references)
  * => Lvalue references bind lvalues. Also const lvalue references can bind to rvalues.
  * (It makes sense cause modifying a temp variable would be problematic)
  * 
@@ -60,6 +62,10 @@ int ReturnInt(){
   return 5;
 }
 
+/** 
+ * It does not make sense btw, it's only for deme purpose
+ * Core guidelines says don't do that `F.45: Don't return a T&&`
+ */
 int&& ReturnIntRefRef(){
   return 5;
 }

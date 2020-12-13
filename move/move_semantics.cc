@@ -41,10 +41,10 @@ public:
    * safety and without noexcept would call copy operations.
    * 
    * std::vector<Person> persons;
-   * persons.push_back("Winnie"); // that would copy without noexcept
+   * persons.push_back("Samwell Tarly"); // that would copy without noexcept
    * 
    */
-  Person(Person&& rhs) noexcept : name_{rhs.name_}{
+  Person(Person&& rhs) noexcept : name_{std::move(rhs.name_)}{
     rhs.name_ = nullptr;
     std::cout << "Move constructor has been called" << std::endl;
   }
