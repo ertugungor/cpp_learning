@@ -6,7 +6,7 @@ class CopyOpsGeneratedPerson{
     CopyOpsGeneratedPerson(std::string name, int id) : name_{name}, id_{id} {}
     ~CopyOpsGeneratedPerson() { std::cout << "CopyOpsGeneratedPerson dtor" << std::endl; }
     int GetId() { return id_; }
-    void PrintInfo() { printf("Name: %-*s\nId: %-*d\n", 15, name_.c_str(), 5, id_); }
+    void PrintInfo() { printf("Name: %-*s\nId: %-*d\n\n", 15, name_.c_str(), 5, id_); }
   private:
     std::string name_;
     int id_;
@@ -46,7 +46,7 @@ class NoCopyCtorPerson{
     NoCopyCtorPerson(std::string name, int id) : name_{name}, id_{id}, member_person_{id+1} {}
     ~NoCopyCtorPerson() { std::cout << "CopyOpsGeneratedPerson dtor" << std::endl; }
     int GetId() { return id_; }
-    void PrintInfo() { printf("Name: %-*s\nId: %-*d\nMember id: %-*d\n", 15, name_.c_str(), 5, id_, 5, member_person_.GetId()); }
+    void PrintInfo() { printf("Name: %-*s\nId: %-*d\nMember id: %-*d\n\n", 15, name_.c_str(), 5, id_, 5, member_person_.GetId()); }
   private:
     std::string name_;
     int id_;
@@ -78,7 +78,7 @@ class NoCopyAssignPerson{
   public:
     NoCopyAssignPerson(std::string name, int& id_ref) : name_{name}, id_ref_{id_ref} {}
     ~NoCopyAssignPerson() { std::cout << "NoCopyAssignPerson dtor" << std::endl; }
-    void PrintInfo() { printf("Name: %-*s\nId ref: %-*d\n", 15, name_.c_str(), 5, id_ref_); }
+    void PrintInfo() { printf("Name: %-*s\nId ref: %-*d\n\n", 15, name_.c_str(), 5, id_ref_); }
   private:
     std::string name_;
     int& id_ref_;
