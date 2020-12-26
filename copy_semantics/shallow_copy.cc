@@ -31,10 +31,10 @@ void PrintInfo(const Person& person){
 }
 
 int main(){
-  Person person{"Robert Baratheon"};
-  PrintInfo(person);
-  Person other_person{person};
-  PrintInfo(other_person);
+  Person rebel_king{"Robert Baratheon"};
+  PrintInfo(rebel_king);
+  Person copy_king{rebel_king};
+  PrintInfo(copy_king);
 } // Scope ended. Both objects' destructor will be called and try to delete same pointer = Undefined behavior
 
 
