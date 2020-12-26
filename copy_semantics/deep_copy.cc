@@ -6,7 +6,6 @@ class Person{
 public:
   Person(const char* name) : name_(new char[strlen(name) + 1])
   {
-    std::cout << "Person ctor for " << name << " has been called" << std::endl;
     memcpy(name_, name, strlen(name) + 1);
   }
 
@@ -29,6 +28,8 @@ public:
     size_t name_size = strlen(rhs.name_) + 1;
     char* new_name = new char[name_size];
     memcpy(new_name, rhs.name_, name_size);
+    printf("Person object at %p is deleting it's name_ ptr. It was at %p %-*s\n",
+      this, name_, 15, name_);
     delete [] name_;
     name_ = new_name;
     return *this;
@@ -42,51 +43,35 @@ private:
   char* name_;
 };
 
-void PrintInfo(const Person& person){
-  printf("Info for %s..\n", person.GetName());
-  printf("%-*s => %p\n", 30, "Address ", (void*)&person);
-  printf("%-*s => %p\n\n", 30, "Address of name_ member", (void*)person.GetName());
-}
-
-Person CreatePerson(int rand_number){
-  if(rand_number == 1){
-    Person smart_person {"Lord Varys"};
-    return smart_person;
-  }else {
-    // Let it leak..
-    Person* person_ptr = new Person{"Ramsay Snow"};
-    PrintInfo(*person_ptr);
-    return *person_ptr;
-  }
-}
-
-void ShowCopySemantics(){
+void ShowDeepCopy(){
   // Shows copy constructor
-  Person person{"Ned Stark"};
-  PrintInfo(person);
-  Person other_person{person};
-  PrintInfo(other_person);
+  Person noble_man{"Ned Stark"};
+  printf("%-*s => %p\n", 30, "Address of `noble_man`", (void*)&noble_man);
+  printf("%-*s => %s\n", 30, "Name of `noble_man` is: ", noble_man.GetName());
+  printf("%-*s => %p\n", 30, "Address of noble_man.name_", (void*)noble_man.GetName());
+  printf("\n");
+
+  Person copy_man{noble_man};
+  printf("%-*s => %p\n", 30, "Address of `copy_man`", (void*)&copy_man);
+  printf("%-*s => %s\n", 30, "Name of `copy_man` is: ", copy_man.GetName());
+  printf("%-*s => %p\n", 30, "Address of copy_man.name_", (void*)copy_man.GetName());
+  printf("\n");
 
   // Shows copy assignment operator
-  Person new_person{"Catelyn Tully"};
-  PrintInfo(new_person);
-  person = new_person;
-  PrintInfo(person);
-}
+  Person lady{"Catelyn Tully"};
+  printf("%-*s => %p\n", 30, "Address of `lady`", (void*)&lady);
+  printf("%-*s => %s\n", 30, "Name of `lady` is: ", lady.GetName());
+  printf("%-*s => %p\n", 30, "Address of lady.name_", (void*)lady.GetName());
+  printf("\n");
 
-void ShowRVO(){
-  // Return value got copied
-  Person created_person = CreatePerson(13);
-  PrintInfo(created_person);
-
-  // Return value did not get copied unless -fno-elide-constructors provided
-  Person another_created_person = CreatePerson(1);
-  PrintInfo(another_created_person);
+  noble_man = lady;
+  printf("%-*s => %p\n", 30, "Address of `noble_man`", (void*)&noble_man);
+  printf("%-*s => %s\n", 30, "Name of `noble_man` is: ", noble_man.GetName());
+  printf("%-*s => %p\n", 30, "Address of noble_man.name_", (void*)noble_man.GetName());
 }
 
 int main(){
-  ShowCopySemantics();
-  ShowRVO();
+  ShowDeepCopy();
 }
 
 
@@ -103,6 +88,5 @@ int main(){
  * Compile:
  * 
  * g++ -std=c++11 -o deep_copy deep_copy.cc
- * g++ -std=c++11 -fno-elide-constructors -o deep_copy.out deep_copy.cc
  * 
  */

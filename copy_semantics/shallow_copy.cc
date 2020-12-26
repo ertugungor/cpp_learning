@@ -24,18 +24,20 @@ private:
   char* name_;
 };
 
-void PrintInfo(const Person& person){
-  printf("Info for %s..\n", person.GetName());
-  printf("%-*s => %p\n", 30, "Address ", (void*)&person);
-  printf("%-*s => %p\n\n", 30, "Address of name_ member", (void*)person.GetName());
-}
+void ShowShallowCopy(){
+  Person rebel_king{"Robert Baratheon"};
+  printf("%-*s => %p\n", 30, "Address of `rebel_king`", (void*)&rebel_king);
+  printf("%-*s => %p\n", 30, "Address of rebel_king.name_", (void*)rebel_king.GetName());
+
+  printf("\n\n\n");
+  Person copy_king{rebel_king};
+  printf("%-*s => %p\n", 30, "Address of `copy_king`", (void*)&copy_king);
+  printf("%-*s => %p\n", 30, "Address of copy_king.name_", (void*)copy_king.GetName());
+} // Scope ended. Both objects' destructor will be called and try to delete same pointer = Undefined behavior
 
 int main(){
-  Person rebel_king{"Robert Baratheon"};
-  PrintInfo(rebel_king);
-  Person copy_king{rebel_king};
-  PrintInfo(copy_king);
-} // Scope ended. Both objects' destructor will be called and try to delete same pointer = Undefined behavior
+  ShowShallowCopy();
+}
 
 
 /* 
