@@ -1,3 +1,12 @@
+/* 
+ * Some examples to understand when compiler implicitly generate copy operations.
+ * 
+ * Compile:
+ * 
+ * g++ -O0 -fno-elide-constructors -std=c++17 -o copy_ops_gen_rules.out copy_ops_gen_rules.cc
+ * 
+ */
+
 #include <string.h>
 #include <iostream>
 

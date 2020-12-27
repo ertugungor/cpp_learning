@@ -1,3 +1,17 @@
+/* 
+ * Compiler generated copy operations just do memberwise copying (shallow copy). This
+ * is dangerous for classes managing a resource whose handle is an object of non-class type
+ * (raw pointer, POSIX file descriptor, etc). 
+ * 
+ * That's why in this example, copy constructor and copy assignment operator have been defined.
+ *
+ * 
+ * Compile:
+ * 
+ * g++ -std=c++11 -o deep_copy deep_copy.cc
+ * 
+ */
+
 #include <string.h>
 #include <iostream>
 
@@ -73,20 +87,3 @@ void ShowDeepCopy(){
 int main(){
   ShowDeepCopy();
 }
-
-
-/* 
- * Compiler generated copy operations just do memberwise copying (shallow copy). This
- * is dangerous for classes managing a resource whose handle is an object of non-class type
- * (raw pointer, POSIX file descriptor, etc). 
- * 
- * That's why in this example, copy constructor and copy assignment operator have been defined.
- */
-
-
-/*
- * Compile:
- * 
- * g++ -std=c++11 -o deep_copy deep_copy.cc
- * 
- */

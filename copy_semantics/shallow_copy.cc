@@ -1,3 +1,19 @@
+/* 
+ * Compiler generated copy operations just do memberwise copying (shallow copy). This
+ * is dangerous for classes managing a resource whose handle is an object of non-class type
+ * (raw pointer, POSIX file descriptor, etc). 
+ * 
+ * Rule of three
+ * 
+ * If a class requires a user-defined destructor, a user-defined copy constructor, or a 
+ * user-defined copy assignment operator, it almost certainly requires all three.
+ * 
+ * Compile:
+ * 
+ * g++ -std=c++11 -o shallow_copy.out shallow_copy.cc
+ * 
+ */
+
 #include <string.h>
 #include <iostream>
 
@@ -38,24 +54,3 @@ void ShowShallowCopy(){
 int main(){
   ShowShallowCopy();
 }
-
-
-/* 
- * Compiler generated copy operations just do memberwise copying (shallow copy). This
- * is dangerous for classes managing a resource whose handle is an object of non-class type
- * (raw pointer, POSIX file descriptor, etc). 
- * 
- * Rule of three
- * 
- * If a class requires a user-defined destructor, a user-defined copy constructor, or a 
- * user-defined copy assignment operator, it almost certainly requires all three.
- * 
- */
-
-
-/*
- * Compile:
- * 
- * g++ -std=c++11 -o shallow_copy.out shallow_copy.cc
- * 
- */
