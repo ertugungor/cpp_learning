@@ -50,22 +50,22 @@
 #include <type_traits>
 #include <typeinfo>
 
-struct B {};
+struct Inventory {};
 
-struct C {};
+struct Skills {};
 
-struct A {
-  A(B& b) : b_ref(b){}
-  static int i;
-  double j;
-  B& b_ref; 
-  C c;
+struct Person {
+  Person(Inventory& inv_ref) : inv_ref_(inv_ref){}
+  static int total_number_;
+  double hp_;
+  Inventory& inv_ref_; 
+  Skills skills_;
 };
-int A::i = 7;
+int Person::total_number_ = 1;
 
-A ReturnA() {
-  static B b;
-  return A{b};
+Person ReturnPerson () {
+  static Inventory inv;
+  return Person{inv};
 }
 
 int ReturnInt() {
@@ -100,25 +100,26 @@ struct value_category<T&&> {
 #define VALUE_CATEGORY(expr) value_category<decltype((expr))>::value
 
 constexpr auto column_size = 50;
-int main() {
-  int int_ = 5;
-  int& int_ref_ = int_;
-  // int&& rvalue_ref = int_; // error: rvalue reference cannot be bound to an lvalue
-  const int const_int_ = 10;
-  int&& rvalue_ref = 10;
 
+void ShowValueTypes(){
+  int int_ = 5;
+  int& int_ref = int_;
+  // int&& rvalue_ref = int_; // error: rvalue reference cannot be bound to an lvalue
+  const int const_int = 10;
+  int&& rvalue_ref = 10;
+  int* int_ptr = &int_;
+
+  // ptr
+  printf("%-*s => %s\n", column_size, "int_ptr", VALUE_CATEGORY(int_ptr));
   // Names of a variables are of type lvalue
   printf("%-*s => %s\n", column_size, "int_", VALUE_CATEGORY(int_));
   // Names of a variables are of type lvalue
-  printf("%-*s => %s\n", column_size, "int_ref_", VALUE_CATEGORY(int_ref_));
+  printf("%-*s => %s\n", column_size, "int_ref", VALUE_CATEGORY(int_ref));
   // Const has no effect
-  printf("%-*s => %s\n", column_size, "const_int_ ", VALUE_CATEGORY(const_int_));
+  printf("%-*s => %s\n", column_size, "const_int ", VALUE_CATEGORY(const_int));
   // Names of a variables are of type lvalue (even if they are rvalue references)
   printf("%-*s => %s\n", column_size, "rvalue_ref", VALUE_CATEGORY(rvalue_ref));
 
-  // Let's forward what type of rvalue_ref really is
-  printf("%-*s => %s\n", column_size, "std::forward<decltype(rvalue_ref)>(rvalue_ref)",
-    VALUE_CATEGORY(std::forward<decltype(rvalue_ref)>(rvalue_ref)));
   // Function call with rvalue reference return type is of type xvalue 
   printf("%-*s => %s\n", column_size, "ReturnIntRefRef()", VALUE_CATEGORY(ReturnIntRefRef()));
   // std::move is one of these functions
@@ -132,14 +133,18 @@ int main() {
   printf("%-*s => %s\n", column_size, "\"String literal\"", VALUE_CATEGORY("String literal"));
 
   // Usual function returns are of type prvalue
-  printf("%-*s => %s\n", column_size, "ReturnA()", VALUE_CATEGORY(ReturnA()));
+  printf("%-*s => %s\n", column_size, "ReturnPerson()", VALUE_CATEGORY(ReturnPerson()));
   // Static members of rvalues are of type lvalue
-  printf("%-*s => %s\n", column_size, "ReturnA().i", VALUE_CATEGORY(ReturnA().i));
+  printf("%-*s => %s\n", column_size, "ReturnPerson().total_number_", VALUE_CATEGORY(ReturnPerson().total_number_));
   // Non-static non-reference members of rvalues are of type xvalue
-  printf("%-*s => %s\n", column_size, "ReturnA().j", VALUE_CATEGORY(ReturnA().j));
-  printf("%-*s => %s\n", column_size, "ReturnA().c", VALUE_CATEGORY(ReturnA().c));
+  printf("%-*s => %s\n", column_size, "ReturnPerson().hp_", VALUE_CATEGORY(ReturnPerson().hp_));
+  printf("%-*s => %s\n", column_size, "ReturnPerson().skills_", VALUE_CATEGORY(ReturnPerson().skills_));
   // Reference type members are of type lvalue
-  printf("%-*s => %s\n", column_size, "ReturnA().b_ref", VALUE_CATEGORY(ReturnA().b_ref));
+  printf("%-*s => %s\n", column_size, "ReturnPerson().inv_ref_", VALUE_CATEGORY(ReturnPerson().inv_ref_));
   
   printf("\n\n\n\n");
+}
+
+int main() {
+  ShowValueTypes();
 }
