@@ -24,7 +24,7 @@
  * 
  * --------------------------------------------------------------------------------------
  * 
- * => Rvalue references only bind to rvalues. (Xvalues bind to rvalue references)
+ * => Rvalue references only bind to rvalues which can either be xvalue or prvalue.
  * => Lvalue references bind lvalues. Also const lvalue references can bind to rvalues.
  * (It makes sense cause modifying a temp variable would be problematic)
  * 
@@ -33,32 +33,42 @@
  * => The biggest caveat here is rvalue references itself can be lvalue in some contexts
  * 
  * void f(Object&& obj){
- *    // obj is an lvalue in this scope
+ *    // obj is an lvalue in this scope, it has a name, an identity.
  * }
  * 
  * This takes us to the some sort of rule of thumb: If it has a name, then it's an lvalue.
+ * 
+ * 
+ * Compile:
+ * 
+ * g++ -std=c++17 -o value_types.out value_types.cc
+ * 
+
  */
 
 #include <iostream>
 #include <type_traits>
 #include <typeinfo>
 
-struct B{};
+struct B {};
 
-struct A{
-  A(B b) : b_ref(b){}
+struct C {};
+
+struct A {
+  A(B& b) : b_ref(b){}
   static int i;
   double j;
   B& b_ref; 
+  C c;
 };
 int A::i = 7;
 
-A ReturnA(){
-  B b;
+A ReturnA() {
+  static B b;
   return A{b};
 }
 
-int ReturnInt(){
+int ReturnInt() {
   return 5;
 }
 
@@ -66,7 +76,7 @@ int ReturnInt(){
  * It does not make sense btw, it's only for deme purpose
  * Core guidelines says don't do that `F.45: Don't return a T&&`
  */
-int&& ReturnIntRefRef(){
+int&& ReturnIntRefRef() {
   return 5;
 }
 
@@ -90,7 +100,7 @@ struct value_category<T&&> {
 #define VALUE_CATEGORY(expr) value_category<decltype((expr))>::value
 
 constexpr auto column_size = 50;
-int main(){
+int main() {
   int int_ = 5;
   int& int_ref_ = int_;
   // int&& rvalue_ref = int_; // error: rvalue reference cannot be bound to an lvalue
@@ -127,6 +137,7 @@ int main(){
   printf("%-*s => %s\n", column_size, "ReturnA().i", VALUE_CATEGORY(ReturnA().i));
   // Non-static non-reference members of rvalues are of type xvalue
   printf("%-*s => %s\n", column_size, "ReturnA().j", VALUE_CATEGORY(ReturnA().j));
+  printf("%-*s => %s\n", column_size, "ReturnA().c", VALUE_CATEGORY(ReturnA().c));
   // Reference type members are of type lvalue
   printf("%-*s => %s\n", column_size, "ReturnA().b_ref", VALUE_CATEGORY(ReturnA().b_ref));
   
