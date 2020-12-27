@@ -1,3 +1,26 @@
+/* 
+ * Move semantics could be used for avoiding unnecessary copies of temp values
+ * (rvalues).
+ * 
+ * Move constructor:
+ *  - Transfer resource from parameter.
+ *  - Leave the parameter in a valid state.
+ * 
+ * Move assigment operator:
+ *  - Clean the old resources.
+ *  - Transfer resource from parameter.
+ *  - Leave the parameter in a valid state.
+ * 
+ */
+
+/*
+ * Compile:
+ * 
+ * g++ -std=c++11 -o move_semantics.out move_semantics.cc
+ * g++ -std=c++11 -fno-elide-constructors -o move_semantics.out move_semantics.cc
+ * 
+ */
+
 #include <string.h>
 #include <iostream>
 #include <vector>
@@ -8,7 +31,7 @@ class Person{
 public:
   Person(const char* name) : name_{new char[strlen(name) + 1]}
   {
-    std::cout << "Person ctor for " << name << " has been called" << std::endl;
+    std::cout << "Person ctor has been called" << std::endl;
     memcpy(name_, name, strlen(name) + 1);
   }
 
@@ -67,62 +90,47 @@ private:
   char* name_;
 };
 
-void PrintInfo(const Person& person){
-  printf("Info for %s..\n", person.GetName());
-  printf("%-*s => %p\n", 30, "Address ", (void*)&person);
-  printf("%-*s => %p\n\n", 30, "Address of name_ member", (void*)person.GetName());
-}
-
-Person CreatePerson(int rand_number){
-  if(rand_number == 1){
-    Person legendary_person {"Arthur Dayne"};
-    return legendary_person;
-  }else {
-    // Let it leak..
-    Person* person_ptr = new Person{"Meryn Trant"};
-    PrintInfo(*person_ptr);
-    return *person_ptr;
-  }
-}
-
-Person global_person{"Brynden Rivers"};
-Person CreateGlobalPerson(){
-  return global_person;
-}
-
-Person CreateStdMovePerson(){
-  Person person{"std::move person"};
-  // We are not helping the compiler, Do not do that!!
-  return std::move(global_person);
-}
-
-void ShowRVOPitfalls(){
-  Person global_person = CreateGlobalPerson();
-  PrintInfo(global_person);
-  Person std_move_person = CreateStdMovePerson();
-  PrintInfo(std_move_person);
-}
 /*
  * This function depicts a case where we could answer why do "I need move
  * semantics if we have RVO" question. After resizing, std::vector would copy
  * every element to new memory address if we did not provide move semantics.
  * 
  */
-void ShowMoreMoveSemantics(){
+void ShowMoveSemanticsInSTL(){
   // Intentionally small vector to trigger resizing
   std::vector<Person> persons{};
   persons.reserve(2);
 
-  Person some_person{"Some person"};
-  PrintInfo(some_person);
+  Person wild_king{"Mance Rayder"};
+  printf("%-*s => %p\n", 50, "Address of `wild_king`", (void*)&wild_king);
+  printf("%-*s => %p\n\n", 50, "Address of wild_king.name_ member", (void*)wild_king.GetName());
 
   // Trigger resize by adding more than capacity of the vector
   for(auto i=0; i<3; ++i){
-    persons.push_back(some_person);
+    persons.push_back(wild_king);
     printf("What's inside persons vector after #%d push?\n", i+1);
     for(const auto& person : persons){
-      PrintInfo(person);
+      printf("%-*s => %p\n", 50, "Address of `person`", (void*)&person);
+      printf("%-*s => %s\n", 50, "Name of `person` is: ", person.GetName());
+      printf("%-*s => %p\n\n", 50, "Address of person.name_ member", (void*)person.GetName());
     }
+  }
+}
+
+Person CreatePerson(int rand_number){
+  if(rand_number == 1){
+    Person legendary_person {"Arthur Dayne"};
+    printf("%-*s => %p\n", 50, "Address of `legendary_person`", (void*)&legendary_person);
+    printf("%-*s => %s\n", 50, "Name of `legendary_person` is: ", legendary_person.GetName());
+    printf("%-*s => %p\n\n", 50, "Address of legendary_person->name_ member", (void*)legendary_person.GetName());
+    return legendary_person;
+  }else {
+    // Let it leak
+    Person* person_ptr = new Person{"Meryn Trant"};
+    printf("%-*s => %p\n", 50, "Address of `person_ptr`", (void*)person_ptr);
+    printf("%-*s => %s\n", 50, "Name of `person_ptr` is: ", person_ptr->GetName());
+    printf("%-*s => %p\n\n", 50, "Address of person_ptr->name_ member", (void*)person_ptr->GetName());
+    return *person_ptr;
   }
 }
 
@@ -132,16 +140,25 @@ void ShowMoveSemantics(){
   // Compiler can optimize away the move constructor unless 
   // -fno-elide-constructors provided
   Person person_from_function{CreatePerson(1)};
-  PrintInfo(person_from_function);
+  printf("%-*s => %p\n", 50, "Address of `person_from_function`", (void*)&person_from_function);
+  printf("%-*s => %s\n", 50, "Name of `person_from_function` is: ", person_from_function.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of person_from_function.name_ member", (void*)person_from_function.GetName());
 
   Person person_from_temp{Person{"Joffrey Baratheon"}};
-  PrintInfo(person_from_temp);
+  printf("%-*s => %p\n", 50, "Address of `person_from_temp`", (void*)&person_from_temp);
+  printf("%-*s => %s\n", 50, "Name of `person_from_temp` is: ", person_from_temp.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of person_from_temp.name_ member", (void*)person_from_temp.GetName());
 
   // Shows move assignment
-  Person other_person{"Craster"};
-  PrintInfo(other_person);
-  other_person = CreatePerson(15);
-  PrintInfo(other_person);
+  Person creepy_person{"Craster"};
+  printf("%-*s => %p\n", 50, "Address of `creepy_person`", (void*)&creepy_person);
+  printf("%-*s => %s\n", 50, "Name of `creepy_person` is: ", creepy_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of creepy_person.name_ member", (void*)creepy_person.GetName());
+
+  creepy_person = CreatePerson(15);
+  printf("%-*s => %p\n", 50, "Address of `creepy_person`", (void*)&creepy_person);
+  printf("%-*s => %s\n", 50, "Name of `creepy_person` is: ", creepy_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of creepy_person.name_ member", (void*)creepy_person.GetName());
 }
 
 /*
@@ -151,44 +168,31 @@ void ShowMoveSemantics(){
  */ 
 void ShowStdMove(){
   // Typical copy
-  Person emotional_person{"Sansa Stark"};
-  PrintInfo(emotional_person);
-  Person copy_constructed_person{emotional_person};
-  PrintInfo(copy_constructed_person);
+  Person naive_person{"Sansa Stark"};
+  printf("%-*s => %p\n", 50, "Address of `naive_person`", (void*)&naive_person);
+  printf("%-*s => %s\n", 50, "Name of `naive_person` is: ", naive_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of naive_person.name_ member", (void*)naive_person.GetName());
+
+  Person copy_constructed_person{naive_person};
+  printf("%-*s => %p\n", 50, "Address of `copy_constructed_person`", (void*)&copy_constructed_person);
+  printf("%-*s => %s\n", 50, "Name of `copy_constructed_person` is: ", copy_constructed_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of copy_constructed_person.name_ member", (void*)copy_constructed_person.GetName());
 
   // Intentional resource transfer with std::move
-  Person move_constructed_person{std::move(emotional_person)};
-  PrintInfo(move_constructed_person);
+  Person move_constructed_person{std::move(naive_person)};
+  printf("%-*s => %p\n", 50, "Address of `move_constructed_person`", (void*)&move_constructed_person);
+  printf("%-*s => %s\n", 50, "Name of `move_constructed_person` is: ", move_constructed_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of move_constructed_person.name_ member", (void*)move_constructed_person.GetName());
+
   // Whap happens to moved-from object? Is using it dangerous?
-  PrintInfo(emotional_person);
+  printf("%-*s => %p\n", 50, "Address of `naive_person`", (void*)&naive_person);
+  printf("%-*s => %s\n", 50, "Name of `naive_person` is: ", naive_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of naive_person.name_ member", (void*)naive_person.GetName());
 }
 
 int main(){
   ShowMoveSemantics();
-  ShowStdMove();
-  ShowMoreMoveSemantics();
-  ShowRVOPitfalls();
+  // ShowStdMove();
+  // ShowMoveSemanticsInSTL();
 }
 
-/* 
- * Move semantics could be used for avoiding unnecessary copies of temp values
- * (rvalues).
- * 
- * Move constructor:
- *  - Transfer resource from parameter.
- *  - Leave the parameter in a valid state.
- * 
- * Move assigment operator:
- *  - Clean the old resources.
- *  - Transfer resource from parameter.
- *  - Leave the parameter in a valid state.
- * 
- */
-
-/*
- * Compile:
- * 
- * g++ -std=c++11 -o move_semantics.out move_semantics.cc
- * g++ -std=c++11 -fno-elide-constructors -o deep_copy.out deep_copy.cc
- * 
- */
