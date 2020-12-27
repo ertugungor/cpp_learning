@@ -72,6 +72,6 @@ void ShowUnnecessaryCopy() {
   printf("%-*s => %p\n\n", 50, "Address of created_person->name_ member", (void*)created_person.GetName());
 }
 
-int main(){
+int main() {
   ShowUnnecessaryCopy();
 }

@@ -101,18 +101,19 @@ void ShowMoveSemanticsInSTL() {
 
   Person wild_king{"Mance Rayder"};
   printf("%-*s => %p\n", 50, "Address of `wild_king`", (void*)&wild_king);
-  printf("%-*s => %p\n\n", 50, "Address of wild_king.name_ member", (void*)wild_king.GetName());
+  printf("%-*s => %p\n", 50, "Address of wild_king.name_ member", (void*)wild_king.GetName());
+  printf("%-*s => %s\n", 50, "Name of `wild_king` is: ", wild_king.GetName());
 
   // Trigger resize by adding more than capacity of the vector
   for(auto i=0; i<3; ++i) {
+    printf("\n");
     persons.push_back(wild_king);
     printf("What's inside persons vector after #%d push?\n", i+1);
     for(const auto& person : persons) {
       printf("%-*s => %p\n", 50, "Address of `person`", (void*)&person);
-      printf("%-*s => %s\n", 50, "Name of `person` is: ", person.GetName());
-      printf("%-*s => %p\n\n", 50, "Address of person.name_ member", (void*)person.GetName());
     }
   }
+  printf("\n");
 }
 
 Person CreatePerson(int rand_number) {
@@ -134,29 +135,33 @@ Person CreatePerson(int rand_number) {
 
 void ShowMoveSemantics() {
   // Shows move constructor with typical rvalue usages
-
+  printf("\n\n");
   // Compiler can optimize away the move constructor unless 
   // -fno-elide-constructors provided
   Person person_from_function{CreatePerson(1)};
   printf("%-*s => %p\n", 50, "Address of `person_from_function`", (void*)&person_from_function);
   printf("%-*s => %s\n", 50, "Name of `person_from_function` is: ", person_from_function.GetName());
   printf("%-*s => %p\n\n", 50, "Address of person_from_function.name_ member", (void*)person_from_function.GetName());
+  printf("\n");
 
   Person person_from_temp{Person{"Joffrey Baratheon"}};
   printf("%-*s => %p\n", 50, "Address of `person_from_temp`", (void*)&person_from_temp);
   printf("%-*s => %s\n", 50, "Name of `person_from_temp` is: ", person_from_temp.GetName());
   printf("%-*s => %p\n\n", 50, "Address of person_from_temp.name_ member", (void*)person_from_temp.GetName());
+  printf("\n");
 
   // Shows move assignment
   Person creepy_person{"Craster"};
   printf("%-*s => %p\n", 50, "Address of `creepy_person`", (void*)&creepy_person);
   printf("%-*s => %s\n", 50, "Name of `creepy_person` is: ", creepy_person.GetName());
   printf("%-*s => %p\n\n", 50, "Address of creepy_person.name_ member", (void*)creepy_person.GetName());
+  printf("\n");
 
   creepy_person = CreatePerson(15);
   printf("%-*s => %p\n", 50, "Address of `creepy_person`", (void*)&creepy_person);
   printf("%-*s => %s\n", 50, "Name of `creepy_person` is: ", creepy_person.GetName());
   printf("%-*s => %p\n\n", 50, "Address of creepy_person.name_ member", (void*)creepy_person.GetName());
+  printf("\n");
 }
 
 /*
@@ -190,7 +195,10 @@ void ShowStdMove() {
 
 int main() {
   ShowMoveSemantics();
+  printf("\n");
   ShowStdMove();
+  printf("\n");
   ShowMoveSemanticsInSTL();
+  printf("\n");
 }
 
