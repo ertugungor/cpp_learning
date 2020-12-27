@@ -20,7 +20,7 @@
 class Person{
 
 public:
-  Person(const char* name) : name_(new char[strlen(name)]) {
+  Person(const char* name) : name_(new char[strlen(name) + 1]) {
     std::cout << "Person ctor for " << name_ << "has been called" << std::endl;
     memcpy(name_, name, strlen(name));
   }
