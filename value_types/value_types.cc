@@ -101,7 +101,7 @@ struct value_category<T&&> {
 
 constexpr auto column_size = 50;
 
-void ShowValueTypes(){
+void ShowValueTypes() {
   int int_ = 5;
   int& int_ref = int_;
   // int&& rvalue_ref = int_; // error: rvalue reference cannot be bound to an lvalue
@@ -109,8 +109,6 @@ void ShowValueTypes(){
   int&& rvalue_ref = 10;
   int* int_ptr = &int_;
 
-  // ptr
-  printf("%-*s => %s\n", column_size, "int_ptr", VALUE_CATEGORY(int_ptr));
   // Names of a variables are of type lvalue
   printf("%-*s => %s\n", column_size, "int_", VALUE_CATEGORY(int_));
   // Names of a variables are of type lvalue
@@ -119,6 +117,8 @@ void ShowValueTypes(){
   printf("%-*s => %s\n", column_size, "const_int ", VALUE_CATEGORY(const_int));
   // Names of a variables are of type lvalue (even if they are rvalue references)
   printf("%-*s => %s\n", column_size, "rvalue_ref", VALUE_CATEGORY(rvalue_ref));
+  // pointers are no different
+  printf("%-*s => %s\n", column_size, "int_ptr", VALUE_CATEGORY(int_ptr));
 
   // Function call with rvalue reference return type is of type xvalue 
   printf("%-*s => %s\n", column_size, "ReturnIntRefRef()", VALUE_CATEGORY(ReturnIntRefRef()));
@@ -141,8 +141,6 @@ void ShowValueTypes(){
   printf("%-*s => %s\n", column_size, "ReturnPerson().skills_", VALUE_CATEGORY(ReturnPerson().skills_));
   // Reference type members are of type lvalue
   printf("%-*s => %s\n", column_size, "ReturnPerson().inv_ref_", VALUE_CATEGORY(ReturnPerson().inv_ref_));
-  
-  printf("\n\n\n\n");
 }
 
 int main() {
