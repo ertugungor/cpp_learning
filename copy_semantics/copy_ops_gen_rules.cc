@@ -10,7 +10,7 @@
 #include <string.h>
 #include <iostream>
 
-class CopyOpsGeneratedPerson{
+class CopyOpsGeneratedPerson{ 
   public:
     CopyOpsGeneratedPerson(std::string name, int id) : name_{name}, id_{id} {}
     ~CopyOpsGeneratedPerson() { std::cout << "CopyOpsGeneratedPerson dtor" << std::endl; }
@@ -21,7 +21,7 @@ class CopyOpsGeneratedPerson{
     int id_;
 };
 
-void ShowGeneratedCopyCtor(){
+void ShowGeneratedCopyCtor() {
   CopyOpsGeneratedPerson mad_king{"Aerys II Targaryen", 15};
   printf("%-*s => %p\n", 30, "Address of `mad_king`", (void*)&mad_king);
   mad_king.PrintInfo();
@@ -41,16 +41,16 @@ void ShowGeneratedCopyCtor(){
   king_slayer.PrintInfo();
 }
 
-class MemberPerson{
+class MemberPerson {
   public:
     MemberPerson(int id) : id_{id} {}
     MemberPerson(const MemberPerson&) = delete;
-    int GetId() {return id_;}
+    int GetId() { return id_; }
   private:
     int id_;
 };
 
-class NoCopyCtorPerson{
+class NoCopyCtorPerson {
   public:
     NoCopyCtorPerson(std::string name, int id) : name_{name}, id_{id}, member_person_{id+1} {}
     ~NoCopyCtorPerson() { std::cout << "CopyOpsGeneratedPerson dtor" << std::endl; }
@@ -62,7 +62,7 @@ class NoCopyCtorPerson{
     MemberPerson member_person_;
 };
 
-void ShowNoCopyCtor(){
+void ShowNoCopyCtor() {
   NoCopyCtorPerson no_one{"Jaqen H'ghar", 0};
   printf("%-*s => %p\n", 30, "Address of `no_one` ", (void*)&no_one);
   no_one.PrintInfo();
@@ -83,7 +83,7 @@ void ShowNoCopyCtor(){
   the_one.PrintInfo();
 }
 
-class NoCopyAssignPerson{
+class NoCopyAssignPerson {
   public:
     NoCopyAssignPerson(std::string name, int& id_ref) : name_{name}, id_ref_{id_ref} {}
     ~NoCopyAssignPerson() { std::cout << "NoCopyAssignPerson dtor" << std::endl; }
@@ -93,7 +93,7 @@ class NoCopyAssignPerson{
     int& id_ref_;
 };
 
-void ShowNoAssign(){
+void ShowNoAssign() {
   int id = 7;
   NoCopyAssignPerson onion_knight{"Davos Seaworth", id};
   printf("%-*s => %p\n", 30, "Address of `onion_knight`", (void*)&onion_knight);
@@ -115,7 +115,7 @@ void ShowNoAssign(){
   // legendary_knight = onion_knight;
 }
 
-int main(){
+int main() {
   ShowGeneratedCopyCtor();
   printf("\n\n");
   ShowNoCopyCtor();

@@ -18,24 +18,22 @@
 class Person{
 
 public:
-  Person(const char* name) : name_(new char[strlen(name) + 1])
-  {
+  Person(const char* name) : name_(new char[strlen(name) + 1]) {
     memcpy(name_, name, strlen(name) + 1);
   }
 
-  ~Person(){
+  ~Person() {
     printf("Person dtor for object at %p has called. It's name_ ptr at %p is %-*s\n",
       this, name_, 15, name_);
     delete [] name_;
   }
 
-  Person(const Person& rhs) : Person(rhs.name_)
-  {
+  Person(const Person& rhs) : Person(rhs.name_) {
     std::cout << "Copy constructor has been called" << std::endl;
   }
 
-  Person& operator=(const Person& rhs){
-    if (this == &rhs){
+  Person& operator=(const Person& rhs) {
+    if (this == &rhs) {
       return *this;
     }
     std::cout << "Copy assignment operator has been called" << std::endl;
@@ -49,7 +47,7 @@ public:
     return *this;
   }
 
-  const char* GetName() const{
+  const char* GetName() const {
     return name_;
   }
 
@@ -57,7 +55,7 @@ private:
   char* name_;
 };
 
-void ShowDeepCopy(){
+void ShowDeepCopy() {
   // Shows copy constructor
   Person noble_man{"Ned Stark"};
   printf("%-*s => %p\n", 30, "Address of `noble_man`", (void*)&noble_man);
@@ -84,6 +82,6 @@ void ShowDeepCopy(){
   printf("%-*s => %p\n", 30, "Address of noble_man.name_", (void*)noble_man.GetName());
 }
 
-int main(){
+int main() {
   ShowDeepCopy();
 }

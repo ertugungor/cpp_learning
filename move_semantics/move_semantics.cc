@@ -29,8 +29,7 @@
 class Person{
 
 public:
-  Person(const char* name) : name_{new char[strlen(name) + 1]}
-  {
+  Person(const char* name) : name_{new char[strlen(name) + 1]} {
     std::cout << "Person ctor has been called" << std::endl;
     memcpy(name_, name, strlen(name) + 1);
   }
@@ -41,13 +40,12 @@ public:
     delete [] name_;
   }
 
-  Person(const Person& rhs) : Person(rhs.name_)
-  {
+  Person(const Person& rhs) : Person(rhs.name_) {
     std::cout << "Copy constructor has been called" << std::endl;
   }
 
-  Person& operator=(const Person& rhs){
-    if (this == &rhs){
+  Person& operator=(const Person& rhs) {
+    if (this == &rhs) {
       return *this;
     }
     std::cout << "Copy assignment operator has been called" << std::endl;
@@ -67,12 +65,12 @@ public:
    * persons.push_back("Samwell Tarly"); // that would copy without noexcept
    * 
    */
-  Person(Person&& rhs) noexcept : name_{std::move(rhs.name_)}{
+  Person(Person&& rhs) noexcept : name_{std::move(rhs.name_)} {
     rhs.name_ = nullptr;
     std::cout << "Move constructor has been called" << std::endl;
   }
 
-  Person& operator=(Person&& rhs) noexcept{
+  Person& operator=(Person&& rhs) noexcept {
     if (this != &rhs){
       std::cout << "Move assignment operator has been called" << std::endl;
       delete [] name_;
@@ -82,7 +80,7 @@ public:
     return *this;
   }
 
-  const char* GetName() const{
+  const char* GetName() const {
     return name_;
   }
 
@@ -96,7 +94,7 @@ private:
  * every element to new memory address if we did not provide move semantics.
  * 
  */
-void ShowMoveSemanticsInSTL(){
+void ShowMoveSemanticsInSTL() {
   // Intentionally small vector to trigger resizing
   std::vector<Person> persons{};
   persons.reserve(2);
@@ -106,10 +104,10 @@ void ShowMoveSemanticsInSTL(){
   printf("%-*s => %p\n\n", 50, "Address of wild_king.name_ member", (void*)wild_king.GetName());
 
   // Trigger resize by adding more than capacity of the vector
-  for(auto i=0; i<3; ++i){
+  for(auto i=0; i<3; ++i) {
     persons.push_back(wild_king);
     printf("What's inside persons vector after #%d push?\n", i+1);
-    for(const auto& person : persons){
+    for(const auto& person : persons) {
       printf("%-*s => %p\n", 50, "Address of `person`", (void*)&person);
       printf("%-*s => %s\n", 50, "Name of `person` is: ", person.GetName());
       printf("%-*s => %p\n\n", 50, "Address of person.name_ member", (void*)person.GetName());
@@ -117,14 +115,14 @@ void ShowMoveSemanticsInSTL(){
   }
 }
 
-Person CreatePerson(int rand_number){
-  if(rand_number == 1){
+Person CreatePerson(int rand_number) {
+  if(rand_number == 1) {
     Person legendary_person {"Arthur Dayne"};
     printf("%-*s => %p\n", 50, "Address of `legendary_person`", (void*)&legendary_person);
     printf("%-*s => %s\n", 50, "Name of `legendary_person` is: ", legendary_person.GetName());
     printf("%-*s => %p\n\n", 50, "Address of legendary_person->name_ member", (void*)legendary_person.GetName());
     return legendary_person;
-  }else {
+  } else {
     // Let it leak
     Person* person_ptr = new Person{"Meryn Trant"};
     printf("%-*s => %p\n", 50, "Address of `person_ptr`", (void*)person_ptr);
@@ -134,7 +132,7 @@ Person CreatePerson(int rand_number){
   }
 }
 
-void ShowMoveSemantics(){
+void ShowMoveSemantics() {
   // Shows move constructor with typical rvalue usages
 
   // Compiler can optimize away the move constructor unless 
@@ -166,7 +164,7 @@ void ShowMoveSemantics(){
  * It doesn't move anything. It unconditionally casts it's parameter.
  * 
  */ 
-void ShowStdMove(){
+void ShowStdMove() {
   // Typical copy
   Person naive_person{"Sansa Stark"};
   printf("%-*s => %p\n", 50, "Address of `naive_person`", (void*)&naive_person);
@@ -190,9 +188,9 @@ void ShowStdMove(){
   printf("%-*s => %p\n\n", 50, "Address of naive_person.name_ member", (void*)naive_person.GetName());
 }
 
-int main(){
+int main() {
   ShowMoveSemantics();
-  // ShowStdMove();
-  // ShowMoveSemanticsInSTL();
+  ShowStdMove();
+  ShowMoveSemanticsInSTL();
 }
 

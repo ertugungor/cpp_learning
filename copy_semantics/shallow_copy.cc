@@ -20,19 +20,18 @@
 class Person{
 
 public:
-  Person(const char* name) : name_(new char[strlen(name)])
-  {
+  Person(const char* name) : name_(new char[strlen(name)]) {
     std::cout << "Person ctor for " << name_ << "has been called" << std::endl;
     memcpy(name_, name, strlen(name));
   }
 
-  ~Person(){
+  ~Person() {
     printf("Person dtor for object at %p has called. It's name_ ptr at %p is %-*s\n",
       this, name_, 15, name_);
     delete [] name_;
   }
 
-  const char* GetName() const{
+  const char* GetName() const {
     return name_;
   }
 
@@ -40,7 +39,7 @@ private:
   char* name_;
 };
 
-void ShowShallowCopy(){
+void ShowShallowCopy() {
   Person rebel_king{"Robert Baratheon"};
   printf("%-*s => %p\n", 30, "Address of `rebel_king`", (void*)&rebel_king);
   printf("%-*s => %p\n", 30, "Address of rebel_king.name_", (void*)rebel_king.GetName());
@@ -51,6 +50,6 @@ void ShowShallowCopy(){
   printf("%-*s => %p\n", 30, "Address of copy_king.name_", (void*)copy_king.GetName());
 } // Scope ended. Both objects' destructor will be called and try to delete same pointer = Undefined behavior
 
-int main(){
+int main() {
   ShowShallowCopy();
 }

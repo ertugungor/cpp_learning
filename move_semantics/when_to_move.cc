@@ -24,18 +24,17 @@ public:
     memcpy(name_, name, strlen(name) + 1);
   }
 
-  ~Person(){
+  ~Person() {
     printf("Person dtor for object at %p has called. It's name_ ptr at %p is %-*s\n",
       this, name_, 15, name_);
     delete [] name_;
   }
 
-  Person(const Person& rhs) : Person(rhs.name_)
-  {
+  Person(const Person& rhs) : Person(rhs.name_) {
     std::cout << "Copy constructor has been called" << std::endl;
   }
 
-  Person& operator=(const Person& rhs){
+  Person& operator=(const Person& rhs) {
     if (this == &rhs){
       return *this;
     }
@@ -50,7 +49,7 @@ public:
     return *this;
   }
 
-  const char* GetName() const{
+  const char* GetName() const {
     return name_;
   }
 
@@ -58,7 +57,7 @@ private:
   char* name_;
 };
 
-Person CreatePerson(){
+Person CreatePerson() {
   Person local_person {"Ser Rodrik Cassel"};
   printf("%-*s => %p\n", 50, "Address of `legendary_person`", (void*)&local_person);
   printf("%-*s => %s\n", 50, "Name of `legendary_person` is: ", local_person.GetName());
@@ -66,7 +65,7 @@ Person CreatePerson(){
   return local_person;
 }
 
-void ShowUnnecessaryCopy(){
+void ShowUnnecessaryCopy() {
   Person created_person = CreatePerson();
   printf("%-*s => %p\n", 50, "Address of `created_person`", (void*)&created_person);
   printf("%-*s => %s\n", 50, "Name of `created_person` is: ", created_person.GetName());
@@ -76,12 +75,3 @@ void ShowUnnecessaryCopy(){
 int main(){
   ShowUnnecessaryCopy();
 }
-
-// Person CreatePerson(){
-//   Person local_person {"Ser Rodrik Cassel"};
-//   return local_person;
-// }
-
-// void ShowUnnecessaryCopy(){
-//   Person created_person = CreatePerson();
-// }
