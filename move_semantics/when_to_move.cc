@@ -59,9 +59,9 @@ private:
 
 Person CreatePerson() {
   Person local_person {"Ser Rodrik Cassel"};
-  printf("%-*s => %p\n", 50, "Address of `legendary_person`", (void*)&local_person);
-  printf("%-*s => %s\n", 50, "Name of `legendary_person` is: ", local_person.GetName());
-  printf("%-*s => %p\n\n", 50, "Address of legendary_person->name_ member", (void*)local_person.GetName());
+  printf("%-*s => %p\n", 50, "Address of `local_person`", (void*)&local_person);
+  printf("%-*s => %s\n", 50, "Name of `local_person` is: ", local_person.GetName());
+  printf("%-*s => %p\n\n", 50, "Address of local_person->name_ member", (void*)local_person.GetName());
   return local_person;
 }
 

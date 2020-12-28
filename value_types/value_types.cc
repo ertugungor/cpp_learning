@@ -62,9 +62,9 @@ struct Person {
   Skills skills_;
 };
 int Person::total_number_ = 1;
+Inventory inv;
 
 Person ReturnPerson () {
-  static Inventory inv;
   return Person{inv};
 }
 
