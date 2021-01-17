@@ -17,7 +17,7 @@ void LogInfo(const char* var_name, T* var){
 
   printf("%-*s => %p\n", 50, addr_buf, (void*)var);
   printf("%-*s => %p\n", 50, name_addr_buf, (void*)var->GetName());
-  printf("%-*s => %s\n", 50, name_buf, var->GetName());
+  printf("%-*s => %s\n\n", 50, name_buf, var->GetName());
 }
 
 #endif
