@@ -59,6 +59,9 @@ public:
   }
 };
 
+/*
+ * Shows defining move operations implicitly deletes copy operations
+ */
 void ShowImplicitlyDeletedCopyOperations() {
   MovablePerson frog_boy{"Jojen Reed", 74};
   /* 
@@ -72,17 +75,31 @@ void ShowImplicitlyDeletedCopyOperations() {
   MovablePerson move_person{std::move(frog_boy)};
 }
 
+/*
+ * Shows defining copy constructor  implicitly generates copy assignment operator
+ */
 void ShowImplicitlyGeneratedCopyAssignment() {
   CopyablePerson beuatiful_knight{"Brienne of Tarth", 18};
   CopyablePerson varg{"Varamyr Sixskins", 85};
   beuatiful_knight = varg;
 }
 
+/*
+ * Shows not-declared functions do not participate in overload options.
+ * Here, there is no Rvalue reference taking function and rvalues can bind
+ * lvalue references. Thus, copy constructor is called.
+ */
 void ShowNotDeclaredMoveOperations() {
   CopyablePerson true_king{"Stannis Baratheon", 1};
   CopyablePerson copy_king{true_king};
   CopyablePerson move_king{std::move(true_king)};
 }
+
+/*
+ * Shows deleted functions do participate in overload options. Here, move construtor will be
+ * the best match cause std::move returns xvalue(rvalue) and move constructor's parameter is
+ * rvalue reference. Because of chosen function is a deleted function, it won't compile.
+ */
 
 void ShowDeletedMoveOperations() {
   NotMovablePerson last_dragon{"Rhaegar Targaryen", 55};
