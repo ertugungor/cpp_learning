@@ -4,7 +4,7 @@
 #include <string.h>
 #include <iostream>
 
-#define LOG_INFO(name) LogInfo(#name, (name))
+#define LOG_INFO(name) LogInfo(#name, (&name))
 
 template<typename T>
 void LogInfo(const char* var_name, T* var){
