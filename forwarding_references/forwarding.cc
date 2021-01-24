@@ -32,13 +32,58 @@
  * 
  * Compile:
  * 
- * g++ -std=c++11 -o forwarding.out forwarding.cc
+ * g++ -std=c++17 -o forwarding.out forwarding.cc
  * 
  */
 
 #include <utility>
 #include <iostream>
 #include <string>
+
+#include <memory>
+
+class Wrapped {
+public:
+  Wrapped() {
+    std::cout << "Wrapped Default ctor" << std::endl;
+  } 
+  Wrapped(const Wrapped& rhs) {
+    std::cout << "Wrapped Copy ctor" << std::endl;
+  } 
+  Wrapped(Wrapped&& rhs) {
+    std::cout << "Wrapped Move ctor" << std::endl;
+  } 
+};
+
+class Wrapper {
+public:
+  Wrapper(const Wrapped& wrapped) : wrapped_{wrapped} {
+    std::cout << "Wrapper ctor" << std::endl;
+  }
+  /** 
+   * Comment out this part and see change 
+   * in function ShowPerfectForwardingMotivation()
+   *
+   * Wrapper(Wrapped&& wrapped) : wrapped_{std::move(wrapped)} {
+   *  std::cout << "Wrapper ctor" << std::endl;
+   * }
+   */
+private:
+  Wrapped wrapped_;
+};
+
+void ShowPerfectForwardingMotivation() {
+  /**
+   * If Wrapper class doesn't override it's constructor
+   * for rvalue reference, copy constructor is called twice
+   * even if we pass rvalue (nameless Wrapped{})
+   */
+  Wrapped wrapped;
+  Wrapper wrapper_lvalue{wrapped};
+
+  Wrapper wrapper_rvalue{Wrapped{}};
+}
+
 
 /**
  * if some_func needs the parameters passed by reference
@@ -117,6 +162,22 @@ void perfect_forwarder(T&& param) {
   func(std::forward<T>(param));
 }
 
+void PerfectForwarding() {
+  std::string song_name {"The Rains of Castemere"};
+  perfect_forwarder(song_name);
+
+  /** 
+   * It doesn't compile. Forwarded function's parameter
+   * takes non-const lvalue reference. This sitation shows
+   * universal references preserve cv-qualifier.
+   * 
+   * const std::string const_song_name{"Jenny's Sons"};
+   * perfect_forwarder(const_song_name);
+   */
+
+  perfect_forwarder(std::string{"Hands of Gold"});
+}
+
 class Person {
 public:
   Person(int id, const std::string& name) : id_{id}, name_{name} {
@@ -132,17 +193,9 @@ private:
   std::string name_;
 };
 
-
 template<typename... Args> 
 void perfect_forwarder_variadic(Args&&... param) {
   Person person{std::forward<Args>(param)...};
-}
-
-void PerfectForwarding() {
-  std::string song_name {"The Rains of Castemere"};
-  perfect_forwarder(song_name);
-
-  perfect_forwarder("Hands of Gold");
 }
 
 void PerfectForwardingVariadic() {
@@ -154,5 +207,7 @@ void PerfectForwardingVariadic() {
 }
 
 int main(){
+  ShowPerfectForwardingMotivation();
+  PerfectForwarding();
   PerfectForwardingVariadic();
-} 
+}
