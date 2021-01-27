@@ -30,7 +30,7 @@ struct NonTrivialPerson {
 void ShowTrivial() {
   static_assert(std::is_trivial_v<TrivialPerson>);
   // Having a user defined default constructor that is not 
-  // declared with `default` is a violence
+  // declared with `default` is a violation
   static_assert(!std::is_trivial_v<NonTrivialPerson>);
 }
 
@@ -59,7 +59,7 @@ class StandardLayoutDerived : public StandardLayoutPerson {};
 void ShowLayout() {
   // Having user defined constructor is OK
   static_assert(std::is_standard_layout_v<StandardLayoutPerson>);
-  // Having members with different access modifiers is a violence
+  // Having members with different access modifiers is a violation
   static_assert(!std::is_standard_layout_v<NonStandardLayoutPerson>);
   // Having a base member that is standard layout is OK
   static_assert(std::is_standard_layout_v<StandardLayoutDerived>);
@@ -80,7 +80,7 @@ struct NonAggregatePerson {
 void ShowAggragate() {
   // Having defaulted constructor is OK for being aggregate in C++17, but not C++20
   static_assert(std::is_aggregate_v<AggregatePerson>);
-  // Having user defined default constructor is a violence
+  // Having user defined default constructor is a violation
   static_assert(!std::is_aggregate_v<NonAggregatePerson>);
 }
 
