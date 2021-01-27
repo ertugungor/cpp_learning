@@ -119,7 +119,7 @@ void bad_forwarder_3(const T& t) {
 }
 
 /**
- * Solution is to override for different parameter types then.
+ * Solution is to overload for different parameter types then.
  */
 template<typename T> void bad_forwarder_4(const T& t) { some_func(t); }
 template<typename T> void bad_forwarder_5(T& t) { some_func(t); }
