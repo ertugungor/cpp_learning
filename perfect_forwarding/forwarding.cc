@@ -199,8 +199,7 @@ void perfect_forwarder_variadic(Args&&... param) {
 }
 
 void PerfectForwardingVariadic() {
-  // perfect_forwarder_variadic(1, "The Song of the Seven"); does not work as we expect
-  perfect_forwarder_variadic(63, std::string{"The Song of the Seven"});
+  perfect_forwarder_variadic(63, "The Song of the Seven"); 
 
   std::string song_name{"Rat Cook"};
   perfect_forwarder_variadic(62, song_name);
